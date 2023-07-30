@@ -1,0 +1,12 @@
+{% extends 'layout/base.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Post
+{% endblock title %}
+{% block content %}
+<h1>{{ post.title|censor }}</h1>
+<b>Дата публикации: {{ post.creationDate|date:'d.m.Y H:i' }}</b>
+<p>{{ post.text|censor }}</p>
+{% endblock content %}

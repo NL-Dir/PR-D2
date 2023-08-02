@@ -2,12 +2,15 @@
 {% load custom_filters %}
 
 {% block title %}
-News
+Search
 {% endblock title %}
 
 {% block content %}
-<h1>Новости</h1>
-<h3>Новостей на странице: {{ news|length }}</h3>
+<h1>Поиск новостей</h1>
+<form method="GET">
+   {{ filter.form }}
+   <input class="btn btn-primary" type="submit" value="Найти">
+</form>
     {% if news %}
         <table>
             <tr>
@@ -21,12 +24,10 @@ News
                     Текст
                 </th>
             </tr>
-        {% for post in news %}
+        {% for post in filter.qs %}
                <tr>
                    <td>
-                       <a href="{% url 'news:post_detail' post.id %}">
-                            {{ post.title }}
-                       </a>
+                       {{ post.title|censor }}
                   </td>
                    <td>
                        {{ post.creationDate|date:'d.m.Y' }}
@@ -34,14 +35,6 @@ News
                    <td>
                        {{ post.text|truncatechars:50|censor }}
                    </td>
-                   <td>
-                        <a href="{% url 'news:post_update' post.id %}">
-                            Edit
-                        </a>
-                        <a href="{% url 'news:post_delete' post.id %}">
-                            Delete
-                        </a>
-                    </td>
                </tr>
         {% endfor %}
         </table>

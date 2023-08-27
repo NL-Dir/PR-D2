@@ -12,9 +12,13 @@ Post
      {{ post.title }}
    </h3>
    <div>
-     Author: <span class="badge bg-info">{{ post.author }}</span>
-     Category Type: <span class="badge bg-info">{{ post.get_categoryType_display }}</span>
-     Date: <span class="badge bg-info">{{ post.creationDate }}</span>
+       Author: <span class="badge bg-info">{{ post.author }}</span>
+       Type: <span class="badge bg-info">{{ post.get_categoryType_display }}</span>
+       Date: <span class="badge bg-info">{{ post.creationDate }}</span>
+       Categories:
+       {% for category in post.postCategory.values %}
+       <a href="{% url 'news:category' category.id %}" class="category">{{category.name}}</a>
+       {% endfor %}
    </div>
  </div>
  <div class="card-body">

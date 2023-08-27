@@ -1,0 +1,23 @@
+{% extends 'layout/base.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Category
+{% endblock title %}
+
+{% block content %}
+{% if category.id %}
+<div class="subscribe">
+  <em>
+    Subscribe to
+    <strong>{{ category }}</strong>
+  </em>
+  <a href="{% url 'news:subscribe' category.id %}" class="button">Subscribe</a>
+</div>
+
+{% endif%}
+
+{% include 'news/parts/paginator.html' %}
+
+{% endblock content %}

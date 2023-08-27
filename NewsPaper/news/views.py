@@ -2,14 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
 from django.views.generic import ListView, DetailView, UpdateView, \
     CreateView, DeleteView, TemplateView
-from .models import Post
+from .models import Post, Category
 from .forms import PostForm
 from django.views import View
 from django.core.paginator import Paginator
 from .filters import NewsFilter
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, resolve
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 
 class NewsList(ListView):
@@ -59,7 +61,7 @@ class PostDetailView(DetailView):
 
 
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = ('news.add_post', )
+    permission_required = ('news.add_post',)
     template_name = 'news/post_create.html'
     form_class = PostForm
 
@@ -96,3 +98,34 @@ def upgrade_me(request):
     if not request.user.groups.filter(name='authors').exists():
         premium_group.user_set.add(user)
     return redirect('/news/user')
+
+
+class CategoryList(ListView):
+    model = Post
+    template_name = 'news/category.html'
+    context_object_name = 'news'
+    ordering = ['-id']
+    paginate_by = 5
+
+    def get_queryset(self):
+        self.id = resolve(self.request.path_info).kwargs['pk']
+        cat = Category.objects.get(id=self.id)
+        queryset = Post.objects.filter(postCategory=cat)
+        return  queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        category = Category.objects.get(id=self.id)
+        subscribed = category.subscribers.filter(email=user.email)
+        if not subscribed:
+            context['category'] = category
+        return context
+
+
+def subscribe_category(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    if not category.subscribers.filter(id=user.id).exists():
+        category.subscribers.add(user)
+    return redirect('news:news')

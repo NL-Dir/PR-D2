@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New post</title>
+</head>
+<body>
+    <h1> New post in your favourite category</h1>
+    <p>
+        There is a new post in category
+        <strong>{{category.name}}</strong>
+        by
+        <strong>{{post.author}}</strong>
+        .
+    </p>
+    <a href="http://127.0.0.1:8000{% url 'news:post_detail' post.id %}">
+        {{ post.title }}
+    </a>
+    <p>
+        {{ post.preview }}
+    </p>
+</body>
+</html>

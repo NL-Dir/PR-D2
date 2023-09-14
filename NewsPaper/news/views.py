@@ -123,9 +123,10 @@ class CategoryList(ListView):
         return context
 
 
+@login_required
 def subscribe_category(request, pk):
     user = request.user
     category = Category.objects.get(id=pk)
     if not category.subscribers.filter(id=user.id).exists():
         category.subscribers.add(user)
-    return redirect('news:news')
+    return redirect('news:user')

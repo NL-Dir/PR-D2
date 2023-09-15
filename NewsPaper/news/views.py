@@ -10,6 +10,7 @@ from .filters import NewsFilter
 from django.urls import reverse_lazy, resolve
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 
@@ -58,6 +59,15 @@ class SearchList(ListView):
 class PostDetailView(DetailView):
     template_name = 'news/post_detail.html'
     queryset = Post.objects.all()
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'post-{self.kwargs["pk"]}',
+                        None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj
 
 
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):

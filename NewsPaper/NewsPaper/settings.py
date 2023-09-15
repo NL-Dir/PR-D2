@@ -258,27 +258,27 @@ LOGGING = {
         'django.request': {
             'handlers': ['error_log', 'mail_admins'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'django.server': {
             'handlers': ['error_log', 'mail_admins'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'django.template': {
             'handlers': ['error_log'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'django.db_backends': {
             'handlers': ['error_log'],
             'level': 'ERROR',
-            'propagate': False,
+            'propagate': True,
         },
         'django.security': {
             'handlers': ['security_log'],
             'level': 'DEBUG',
-            'propagate': False,
+            'propagate': True,
         },
     }
 }
